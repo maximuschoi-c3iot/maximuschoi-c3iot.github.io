@@ -1,34 +1,166 @@
-// 8.1.6 Piechart
-<html>
-<style> path {stroke: black;}</style>
-<script src='https://d3js.org/d3.v5.min.js'></script>
-<body>
-<svg width=300 height=300></svg>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div class="grid-container">
+<div class="description">
+<p style="text-align: center;"><strong><u>Low Federal Funds Effective Rate and Stimulus Package</u></strong></p>
+<p style="text-align: left;">In response to Covid19, the federal has introduced the historically low-interest rate. The lower investment opportunities from interest rate and other activities slowed down by Covid19, such as real estate and oil, drive investors to the stock market.</p>
+<p style="text-align: left;">On top of the low-interest rate, the federal injected trillion dollars to the economy that slowed down due to inactivity in fear of Covid19 rather than a monetary shortage.&nbsp;<br /><br /></p>
+</div>
+<div id="my_dataviz"></div>
+</div>
 <script>
-    var data = [4,8,15,16,23,42];
-    var color = ['pink','lightyellow','lightgreen','lightcyan','lightblue','violet'];
-    var pie = d3.pie();
-    var arc = d3.arc().innerRadius(0).outerRadius(100);
+//  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
+var raw_data = [
+  {"date": "2020-01-01", "value": 1.55},
+  {"date": "2020-02-01", "value": 1.58},
+  {"date": "2020-03-01", "value": 0.65},
+  {"date": "2020-04-01", "value": 0.05},
+  {"date": "2020-05-01", "value": 0.05},
+  {"date": "2020-06-01", "value": 0.08},
+  {"date": "2020-07-01", "value": 0.08},
+  {"date": "2020-08-01", "value": 0.08}
+];
 
-    var svg = d3.select("svg"),
- 	    width = svg.attr("width"),
- 	    height = svg.attr("height"),
- 	    radius = Math.min(width, height) / 2;
-    svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+var margin = {top: 30, right: 30, bottom: 50, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
 
-    //var color = d3.scaleOrdinal(['#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c']);
-    
-    var color = d3.scaleOrdinal(color);
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
 
-	svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-	   .selectAll("path")
-	   .data(pie(data))
-	   .enter()
-	   .append("path")
-	   .attr("d", arc)
-	   .attr("fill", function(d, i) {return color(i);});
-	    
-	    
+  // When reading the csv, I must format variables:
+  var data = [];
+  raw_data.forEach(d => data.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
+  console.log(data)
+    var x = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.date; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain( [0, 3])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+    // Add the line
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "#707070")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.value) })
+        )
+
+   // create a tooltip
+    var Tooltip = d3.select("#my_dataviz")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px")
+
+
+    // Three function that change the tooltip when user hover / move / leave a cell
+    var mouseover = function(d) {
+      Tooltip
+        .style("opacity", 1)
+    }
+    var mousemove = function(d) {
+      var formatTime = d3.timeFormat("%B, %Y");
+      Tooltip
+        .html("Effective rate " + d.value + "% for " + formatTime(d.date))
+        .style("left", (d3.mouse(this)[0]+70) + "px")
+        .style("top", (d3.mouse(this)[1]) + "px")
+    }
+    var mouseleave = function(d) {
+      Tooltip
+        .style("opacity", 0)
+    }
+
+    const annotations = [{
+      note: {
+        title: "March 26",
+        label: "The Senate passes $2 trillion stimulus bill CARES",
+        wrap: 150,  // try something smaller to see text split in several lines
+        padding: 10,   // More = text lower
+      },
+      color: ["#008000"],
+      //data: { date: "20-03-20", value: 1850 },
+      y: 305,
+      x: 150,
+      dy: -50,
+      dx: 0
+    },
+    {
+      note: {
+        title: "August 2",
+        label: "The Senate plans to pass another stimulus bill HEALS",
+        wrap: 150,  // try something smaller to see text split in several lines
+        padding: 10,   // More = text lower
+        align: "right"
+      },
+      color: ["#008000"],
+      //data: { date: "20-03-20", value: 1850 },
+      y: 310,
+      x: 375,
+      dy: -190,
+      dx: 0
+    }]
+
+    const makeAnnotations = d3.annotation().annotations(annotations)
+
+
+    // Add X axis label:
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", width)
+      .attr("y", height+40 )
+      .text("Time");
+
+    // Add Y axis label:
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", 0)
+      .attr("y", -10 )
+      .text("Fed interest rate")
+      .attr("text-anchor", "start")
+
+    // Add the points
+    svg
+      .append("g")
+      .selectAll("dot")
+      .data(data)
+      .enter()
+      .call(makeAnnotations)
+      .append("circle")
+      .attr("class", "myCircle")
+      .attr("cx", function(d) { return x(d.date) } )
+      .attr("cy", function(d) { return y(d.value) } )
+      .attr("r", 5)
+      .attr("fill", "#808080")
+      .attr("stroke", "#808080")
+      .attr("stroke-width", 3)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave)
+      
+
 </script>
 </body>
 </html>

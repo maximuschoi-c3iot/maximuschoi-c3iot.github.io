@@ -3,22 +3,31 @@
 <link rel="stylesheet" href="../css/style.css">
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<div class="grid-container">
+<div class="description">
+<p style="text-align: center;"><strong><u>Increasing Number of Brokerage Account in the U.S.&nbsp;</u></strong></p>
+<p style="text-align: left;">Since the Covid19 breakout, retail trading activity has surged - the active number of accounts and daily transactions.</p>
+<p style="text-align: left;">Fintech companies such as Robinhood and Charles Swab has enabled young buyers to start stock trading with smaller capitals.<br /><br /></p>
+</div>
 <div id="my_dataviz"></div>
-
+</div>
 <script>
 //  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
 var raw_data = [
-  {"date": "2020-01-01", "value": 3278},
-  {"date": "2020-02-01", "value": 3277},
-  {"date": "2020-03-01", "value": 2652},
-  {"date": "2020-04-01", "value": 2762},
-  {"date": "2020-05-01", "value": 2920},
-  {"date": "2020-06-01", "value": 3207},
-  {"date": "2020-07-01", "value": 3154},
-  {"date": "2020-08-01", "value": 3271}
+  {"date": "2020-01-01", "value": 14031000},
+  {"date": "2020-02-01", "value": 14250000},
+  {"date": "2020-03-01", "value": 14352000},
+  {"date": "2020-04-01", "value": 15282000},
+  {"date": "2020-05-01", "value": 15900000},
+  {"date": "2020-06-01", "value": 16300000},
+  {"date": "2020-07-01", "value": 16920000},
+  {"date": "2020-08-01", "value": 17005000}
 ];
 
-var margin = {top: 10, right: 30, bottom: 30, left: 60},
+var formatComma = d3.format(",");
+
+var margin = {top: 30, right: 30, bottom: 50, left: 60},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -42,7 +51,7 @@ var svg = d3.select("#my_dataviz")
       .call(d3.axisBottom(x));
     // Add Y axis
     var y = d3.scaleLinear()
-      .domain( [0, 4000])
+      .domain( [12000000, 18000000])
       .range([ height, 0 ]);
     svg.append("g")
       .call(d3.axisLeft(y));
@@ -50,7 +59,7 @@ var svg = d3.select("#my_dataviz")
     svg.append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "#69b3a2")
+      .attr("stroke", "#707070")
       .attr("stroke-width", 1.5)
       .attr("d", d3.line()
         .x(function(d) { return x(d.date) })
@@ -77,7 +86,7 @@ var svg = d3.select("#my_dataviz")
     var mousemove = function(d) {
       var formatTime = d3.timeFormat("%B %d, %Y");
       Tooltip
-        .html("index value: " + d.value + " on " + formatTime(d.date))
+        .html("Brokerage account count: " + formatComma(d.value) + " on " + formatTime(d.date))
         .style("left", (d3.mouse(this)[0]+70) + "px")
         .style("top", (d3.mouse(this)[1]) + "px")
     }
@@ -88,18 +97,35 @@ var svg = d3.select("#my_dataviz")
 
     const annotations = [{
       note: {
-        label: "Longer text to show text wrapping",
-        title: "Annotations"
+        title: "Surge of account",
+        label: "Since March 2020, the number of brokerage account surged in the U.S.",
+        wrap: 180,  // try something smaller to see text split in several lines
+        padding: 10,   // More = text lower
       },
-      //can use x, y directly instead of data
+      color: ["#008000"],
       //data: { date: "20-03-20", value: 1850 },
-      y: 100,
-      x: 100,
-      dy: 100,
-      dx: 100
+      y: 180,
+      x: 120,
+      dy: 50,
+      dx: 50
     }]
 
     const makeAnnotations = d3.annotation().annotations(annotations)
+
+    // Add X axis label:
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", width)
+      .attr("y", height+40 )
+      .text("Time");
+
+    // Add Y axis label:
+    svg.append("text")
+      .attr("text-anchor", "end")
+      .attr("x", 0)
+      .attr("y", -10 )
+      .text("# of brokerage account")
+      .attr("text-anchor", "start")
 
     // Add the points
     svg
@@ -113,8 +139,8 @@ var svg = d3.select("#my_dataviz")
       .attr("cx", function(d) { return x(d.date) } )
       .attr("cy", function(d) { return y(d.value) } )
       .attr("r", 5)
-      .attr("fill", "#69b3a2")
-      .attr("stroke", "#69b3a2")
+      .attr("fill", "#808080")
+      .attr("stroke", "#808080")
       .attr("stroke-width", 3)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)

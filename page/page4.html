@@ -3,26 +3,47 @@
 <link rel="stylesheet" href="../css/style.css">
 <script src="https://d3js.org/d3.v4.js"></script>
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 <div class="grid-container">
 <div class="description">
-<p style="text-align: center;"><strong><span style="text-decoration: underline;">S&amp;P Index Rapid Recovery during Pandemic</span></strong></p>
-<p>The stock market S&amp;P 500 index reached its peak 3380 on Feb 19, 2020. After the Covid19 breakout news in the U.S., the index crashed 33% to 2230 by March 23, 2020. Despite the Covid19, the index has recovered to 3270 on July 22, 2020. Many stock market analysts and economist scratched their heads why the stock market has been recovering despite the economy number is gloomy and the Covid19 situation is not getting better.</p>
-<p><strong>The stock market prices are driven by many buyers and many sellers, not by the macroeconomy.&nbsp;The market is having more buyers than sellers.</strong></p>
+<p style="text-align: center;"><strong><u>S&amp;P Future Prediction based on Hypothetical Scenarios</u></strong></p>
+<p style="text-align: left;">The stock market prices are driven by the relative ration of buyers and sellers. Contributing factors will be consumer activity recovery, election (future stimulus uncertainty), and the severity of Covid19 spread (fear factor).</p>
+<p style="text-align: left;">Scenario 1:</p>
+<p style="text-align: left;">Covid19 spread slows down. Consumer activities recover and spending increases. Election candidates are hopeful the economy will recover soon. Therefore, a further stimulus package is unlikely. In this scenario, the stock market can go down because buyers will liquidate stock investment profit and move to other consuming and investment activities.</p>
+<p style="text-align: left;">Scenario 2:</p>
+<p style="text-align: left;">Covid19 spread continues. Consumer spending activities remain in limbo. Election candidates promise further stimulus package to boost the economy. In this scenario, the stock market can go up further with buyers having more cash invest.</p>
+<p style="text-align: left;">Select a scenario below to see the future prediction on the graph</p>
+<div class="wrapper">
+<button onclick="update(data_1)">Scenario 1</button>
+<button onclick="update(data_2)">Scenario 2</button>
+</div>
 </div>
 <div id="my_dataviz"></div>
 </div>
 <script>
+
 //  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
-var raw_data = [
-  {"date": "2020-01-01", "value": 3278},
-  {"date": "2020-02-01", "value": 3277},
-  {"date": "2020-03-01", "value": 2652},
-  {"date": "2020-04-01", "value": 2762},
+var raw_data_1 = [
   {"date": "2020-05-01", "value": 2920},
   {"date": "2020-06-01", "value": 3207},
   {"date": "2020-07-01", "value": 3154},
-  {"date": "2020-08-01", "value": 3271}
+  {"date": "2020-08-01", "value": 3271},
+  {"date": "2020-09-01", "value": 3271},
+  {"date": "2020-10-01", "value": 3271},
+  {"date": "2020-11-01", "value": 3271},
+  {"date": "2020-12-01", "value": 3271}
+];
+
+var raw_data_2 = [
+  {"date": "2020-05-01", "value": 2920},
+  {"date": "2020-06-01", "value": 3207},
+  {"date": "2020-07-01", "value": 3154},
+  {"date": "2020-08-01", "value": 3271},
+  {"date": "2020-09-01", "value": 3671},
+  {"date": "2020-10-01", "value": 3271},
+  {"date": "2020-11-01", "value": 4571},
+  {"date": "2020-12-01", "value": 5271}
 ];
 
 var formatComma = d3.format(",");
@@ -40,9 +61,27 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
   // When reading the csv, I must format variables:
-  var data = [];
-  raw_data.forEach(d => data.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
-  console.log(data)
+  var data_1 = [];
+  raw_data_1.forEach(d => data_1.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
+
+  var data_2 = [];
+  raw_data_2.forEach(d => data_2.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
+
+ 
+
+   // create a tooltip
+    var Tooltip = d3.select("#my_dataviz")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px")
+
+function update(data) {
+ //console.log(data)
     var x = d3.scaleTime()
       .domain(d3.extent(data, function(d) { return d.date; }))
       .range([ 0, width ]);
@@ -56,6 +95,7 @@ var svg = d3.select("#my_dataviz")
     svg.append("g")
       .call(d3.axisLeft(y));
     // Add the line
+
     svg.append("path")
       .datum(data)
       .attr("fill", "none")
@@ -66,34 +106,6 @@ var svg = d3.select("#my_dataviz")
         .y(function(d) { return y(d.value) })
         )
 
-   // create a tooltip
-    var Tooltip = d3.select("#my_dataviz")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px")
-
-
-    // Three function that change the tooltip when user hover / move / leave a cell
-    var mouseover = function(d) {
-      Tooltip
-        .style("opacity", 1)
-    }
-    var mousemove = function(d) {
-      var formatTime = d3.timeFormat("%B %d, %Y");
-      Tooltip
-        .html("Index value: " + formatComma(d.value) + " on " + formatTime(d.date))
-        .style("left", (d3.mouse(this)[0]+70) + "px")
-        .style("top", (d3.mouse(this)[1]) + "px")
-    }
-    var mouseleave = function(d) {
-      Tooltip
-        .style("opacity", 0)
-    }
 
     const annotations = [{
       note: {
@@ -150,18 +162,15 @@ var svg = d3.select("#my_dataviz")
       .data(data)
       .enter()
       .call(makeAnnotations)
-      .append("circle")
-      .attr("class", "myCircle")
-      .attr("cx", function(d) { return x(d.date) } )
-      .attr("cy", function(d) { return y(d.value) } )
-      .attr("r", 5)
-      .attr("fill", "#808080")
-      .attr("stroke", "#808080")
-      .attr("stroke-width", 3)
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave)
-      
+
+  var u = svg.selectAll(".lineTest")
+    .data([data], function(d){ return d.ser1 });
+
+
+}
+update(data_1)
+
+</script>
 
 </script>
 </body>

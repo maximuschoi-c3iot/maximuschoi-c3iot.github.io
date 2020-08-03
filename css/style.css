@@ -1,5 +1,31 @@
+.wrapper {
+    text-align: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+#description { 
+    float:left;  
+    background: #efefef;
+    padding-top:20px; 
+    width:30%;
+    height:50%; 
+    top: -20px;
+} 
+
+#my_dataviz{ 
+    float:left;  
+    background: none; 
+    width:50%; 
+    height:280px; 
+} 
+
 .myCircle:hover {
-  stroke: black;
+    stroke: black;
 }
 
 .carousel {
@@ -20,7 +46,7 @@
 	height: 100%;
 	position: relative;
 	overflow: hidden;
-	border: 0.5;
+	border: transparent;
 }
 
 .carousel_track {
