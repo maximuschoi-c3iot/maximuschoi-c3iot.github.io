@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<div id="my_dataviz"></div>
+
+<script>
+//  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
+var raw_data = [
+  {"date": "2020-01-01", "value": 3278},
+  {"date": "2020-02-01", "value": 3277},
+  {"date": "2020-03-01", "value": 2652},
+  {"date": "2020-04-01", "value": 2762},
+  {"date": "2020-05-01", "value": 2920},
+  {"date": "2020-06-01", "value": 3207},
+  {"date": "2020-07-01", "value": 3154},
+  {"date": "2020-08-01", "value": 3271}
+];
+
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+  // When reading the csv, I must format variables:
+  var data = [];
+  raw_data.forEach(d => data.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
+  console.log(data)
+    var x = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.date; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain( [0, 4000])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+    // Add the line
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "#69b3a2")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.value) })
+        )
+
+   // create a tooltip
+    var Tooltip = d3.select("#my_dataviz")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px")
+
+
+    // Three function that change the tooltip when user hover / move / leave a cell
+    var mouseover = function(d) {
+      Tooltip
+        .style("opacity", 1)
+    }
+    var mousemove = function(d) {
+      var formatTime = d3.timeFormat("%B %d, %Y");
+      Tooltip
+        .html("index value: " + d.value + " on " + formatTime(d.date))
+        .style("left", (d3.mouse(this)[0]+70) + "px")
+        .style("top", (d3.mouse(this)[1]) + "px")
+    }
+    var mouseleave = function(d) {
+      Tooltip
+        .style("opacity", 0)
+    }
+
+    const annotations = [{
+      note: {
+        label: "Longer text to show text wrapping",
+        title: "Annotations"
+      },
+      //can use x, y directly instead of data
+      //data: { date: "20-03-20", value: 1850 },
+      y: 100,
+      x: 100,
+      dy: 100,
+      dx: 100
+    }]
+
+    const makeAnnotations = d3.annotation().annotations(annotations)
+
+    // Add the points
+    svg
+      .append("g")
+      .selectAll("dot")
+      .data(data)
+      .enter()
+      .call(makeAnnotations)
+      .append("circle")
+      .attr("class", "myCircle")
+      .attr("cx", function(d) { return x(d.date) } )
+      .attr("cy", function(d) { return y(d.value) } )
+      .attr("r", 5)
+      .attr("fill", "#69b3a2")
+      .attr("stroke", "#69b3a2")
+      .attr("stroke-width", 3)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave)
+      
+
+</script>
+</body>
+</html>

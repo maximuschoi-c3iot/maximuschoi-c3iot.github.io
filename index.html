@@ -1,1 +1,58 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Maximus Choi</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script src='https://d3js.org/d3.v5.min.js'></script>
+  <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+  <script> 
+    $(function(){
+      $("#DivContent1").load("page/page1.html"); 
+      $("#DivContent2").load("page/page2.html");
+      $("#DivContent3").load("page/page3.html"); 
+    });
+  </script> 
+</head>
+<body>
+	<div class="carousel">
+
+		<button class="carousel_button carousel_button-left is-hidden">
+			<img src="img/left.svg" alt="">
+		</button>
+
+		<div class="carousel_track-container">
+			<ul class="carousel_track">
+				<li class="carousel_slide current-slide">
+					<div id="DivContent1" style="width:200px; height:200px;"></div>
+        		</li>
+        		<li class="carousel_slide">
+        			<div id="DivContent2" style="width:200px; height:200px;"></div>
+        		</li>
+        		<li class="carousel_slide">
+        			<div id="DivContent3"></div>
+       			</li>
+        		<li class="carousel_slide">
+        			<img class="carousel_image" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/130891/crooked-forest.jpg" alt="" />
+        		</li>
+        	</ul>
+        </div>
+
+        <button class="carousel_button carousel_button-right">
+        	<img src="img/right.svg" alt="">
+        </button>
+
+        <div class="carousel_nav">
+        	<button class="carousel_indicator current-slide">1</button>
+        	<button class="carousel_indicator">2</button>
+        	<button class="carousel_indicator">3</button>
+        	<button class="carousel_indicator">4</button>
+        </div>
+	</div>
+
+	<script src="js/carousel.js"></script>
+</body>
+</html>
