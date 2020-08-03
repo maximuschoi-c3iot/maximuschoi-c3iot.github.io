@@ -5,12 +5,12 @@
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 <div class="grid-container">
-<div class="description">
+<div class="description1">
 <p style="text-align: center;"><strong><span style="text-decoration: underline;">S&amp;P Index Rapid Recovery during Pandemic</span></strong></p>
 <p>The stock market S&amp;P 500 index reached its peak 3380 on Feb 19, 2020. After the Covid19 breakout news in the U.S., the index crashed 33% to 2230 by March 23, 2020. Despite the Covid19, the index has recovered to 3270 on July 22, 2020. Many stock market analysts and economist scratched their heads why the stock market has been recovering despite the economy number is gloomy and the Covid19 situation is not getting better.</p>
 <p><strong>The stock market prices are driven by many buyers and many sellers, not by the macroeconomy.&nbsp;The market is having more buyers than sellers.</strong></p>
 </div>
-<div id="my_dataviz"></div>
+<div id="my_dataviz1"></div>
 </div>
 <script>
 //  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
@@ -31,7 +31,7 @@ var margin = {top: 30, right: 30, bottom: 50, left: 60},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-var svg = d3.select("#my_dataviz")
+var svg = d3.select("#my_dataviz1")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -67,7 +67,7 @@ var svg = d3.select("#my_dataviz")
         )
 
    // create a tooltip
-    var Tooltip = d3.select("#my_dataviz")
+    var Tooltip = d3.select("#my_dataviz1")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -92,7 +92,7 @@ var svg = d3.select("#my_dataviz")
     }
     var mouseleave = function(d) {
       Tooltip
-        .style("opacity", 0)
+        .style("opacity", 1)
     }
 
     const annotations = [{

@@ -14,10 +14,14 @@
       $("#DivContent1").load("page/page1.html"); 
       $("#DivContent2").load("page/page2.html");
       $("#DivContent3").load("page/page3.html");
-      $("#DivContent3").load("page/page4.html");
-      $("#DivContent3").load("page/page4.html");
+      $("#DivContent4").load("page/page4.html");
     });
   </script> 
+  <style>
+div {
+  background-color: powderblue;
+}
+</style>
 </head>
 <body>
 	<div class="carousel">
@@ -29,16 +33,16 @@
 		<div class="carousel_track-container">
 			<ul class="carousel_track">
 				<li class="carousel_slide current-slide">
-					<div id="DivContent1" style="width:460; height:400px;></div>
+					<div id="DivContent1"></div>
         		</li>
         		<li class="carousel_slide">
-        			<div id="DivContent2" style="width:460; height:400px;></div>
+        			<div id="DivContent2"></div>
         		</li>
         		<li class="carousel_slide">
         			<div id="DivContent3"></div>
        			</li>
         		<li class="carousel_slide">
-        			<div id="DivContent4" style="width:460; height:400px;"></div>
+        			<div id="DivContent4"></div>
         		</li>
         	</ul>
         </div>
@@ -54,7 +58,6 @@
         	<button class="carousel_indicator">4</button>
         </div>
 	</div>
-
 	<script src="js/carousel.js"></script>
 </body>
 </html>

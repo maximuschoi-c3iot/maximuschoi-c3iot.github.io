@@ -5,12 +5,12 @@
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 <div class="grid-container">
-<div class="description">
+<div class="description2">
 <p style="text-align: center;"><strong><u>Low Federal Funds Effective Rate and Stimulus Package</u></strong></p>
 <p style="text-align: left;">In response to Covid19, the federal has introduced the historically low-interest rate. The lower investment opportunities from interest rate and other activities slowed down by Covid19, such as real estate and oil, drive investors to the stock market.</p>
 <p style="text-align: left;">On top of the low-interest rate, the federal injected trillion dollars to the economy that slowed down due to inactivity in fear of Covid19 rather than a monetary shortage.&nbsp;<br /><br /></p>
 </div>
-<div id="my_dataviz"></div>
+<div id="my_dataviz2"></div>
 </div>
 <script>
 //  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
@@ -29,7 +29,7 @@ var margin = {top: 30, right: 30, bottom: 50, left: 60},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-var svg = d3.select("#my_dataviz")
+var svg = d3.select("#my_dataviz2")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -65,7 +65,7 @@ var svg = d3.select("#my_dataviz")
         )
 
    // create a tooltip
-    var Tooltip = d3.select("#my_dataviz")
+    var Tooltip = d3.select("#my_dataviz2")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -83,6 +83,7 @@ var svg = d3.select("#my_dataviz")
     }
     var mousemove = function(d) {
       var formatTime = d3.timeFormat("%B, %Y");
+      //console.log("here");
       Tooltip
         .html("Effective rate " + d.value + "% for " + formatTime(d.date))
         .style("left", (d3.mouse(this)[0]+70) + "px")
