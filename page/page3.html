@@ -8,7 +8,7 @@
 <div class="description3">
 <p style="text-align: center;"><strong><u>Increasing Number of Brokerage Account in the U.S.&nbsp;</u></strong></p>
 <p style="text-align: left;">Since the Covid19 breakout, retail trading activity has surged - the active number of accounts and daily transactions.</p>
-<p style="text-align: left;">Fintech companies such as Robinhood and Charles Swab has enabled young buyers to start stock trading with smaller capitals.<br /><br /></p>
+<p style="text-align: left;">Fintech companies such as Robinhood and Charles Swab has enabled young buyers to start stock trading with smaller capitals. Under the pandemic, Buyers have time to look into the stock market and can do more easily than they ever could.<br /><br /></p>
 </div>
 <div id="my_dataviz3"></div>
 </div>
@@ -67,7 +67,7 @@ var svg = d3.select("#my_dataviz3")
         )
 
    // create a tooltip
-    var Tooltip = d3.select("#my_dataviz3")
+    var Tooltip3 = d3.select("#my_dataviz3")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -80,18 +80,18 @@ var svg = d3.select("#my_dataviz3")
 
     // Three function that change the tooltip when user hover / move / leave a cell
     var mouseover = function(d) {
-      Tooltip
+      Tooltip3
         .style("opacity", 1)
     }
     var mousemove = function(d) {
       var formatTime = d3.timeFormat("%B %d, %Y");
-      Tooltip
+      Tooltip3
         .html("Brokerage account count: " + formatComma(d.value) + " on " + formatTime(d.date))
         .style("left", (d3.mouse(this)[0]+70) + "px")
         .style("top", (d3.mouse(this)[1]) + "px")
     }
     var mouseleave = function(d) {
-      Tooltip
+      Tooltip3
         .style("opacity", 0)
     }
 

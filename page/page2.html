@@ -6,9 +6,9 @@
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 <div class="grid-container">
 <div class="description2">
-<p style="text-align: center;"><strong><u>Low Federal Funds Effective Rate and Stimulus Package</u></strong></p>
-<p style="text-align: left;">In response to Covid19, the federal has introduced the historically low-interest rate. The lower investment opportunities from interest rate and other activities slowed down by Covid19, such as real estate and oil, drive investors to the stock market.</p>
-<p style="text-align: left;">On top of the low-interest rate, the federal injected trillion dollars to the economy that slowed down due to inactivity in fear of Covid19 rather than a monetary shortage.&nbsp;<br /><br /></p>
+<p style="text-align: center;"><strong><u>More Buyers Enabled by Low Federal Funds Effective Rate and Stimulus Package</u></strong></p>
+<p style="text-align: left;">In response to Covid19, the federal has introduced the historically low-interest rate. The low interest rate and low-return investment activities, such as real estate and oil, have driven cash to the stock market.</p>
+<p style="text-align: left;">In addition, the federal injected trillion dollars to the economy while consumer spending has decreased due to Covid19, not due to money shortage. Buyers are equipped with cash.&nbsp;<br /><br /></p>
 </div>
 <div id="my_dataviz2"></div>
 </div>
@@ -65,7 +65,7 @@ var svg = d3.select("#my_dataviz2")
         )
 
    // create a tooltip
-    var Tooltip = d3.select("#my_dataviz2")
+    var Tooltip2 = d3.select("#my_dataviz2")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -78,19 +78,19 @@ var svg = d3.select("#my_dataviz2")
 
     // Three function that change the tooltip when user hover / move / leave a cell
     var mouseover = function(d) {
-      Tooltip
+      Tooltip2
         .style("opacity", 1)
     }
     var mousemove = function(d) {
       var formatTime = d3.timeFormat("%B, %Y");
       //console.log("here");
-      Tooltip
+      Tooltip2
         .html("Effective rate " + d.value + "% for " + formatTime(d.date))
         .style("left", (d3.mouse(this)[0]+70) + "px")
         .style("top", (d3.mouse(this)[1]) + "px")
     }
     var mouseleave = function(d) {
-      Tooltip
+      Tooltip2
         .style("opacity", 0)
     }
 

@@ -7,170 +7,136 @@
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 <div class="grid-container">
 <div class="description4">
-<p style="text-align: center;"><strong><u>S&amp;P Future Prediction based on Hypothetical Scenarios</u></strong></p>
-<p style="text-align: left;">The stock market prices are driven by the relative ration of buyers and sellers. Contributing factors will be consumer activity recovery, election (future stimulus uncertainty), and the severity of Covid19 spread (fear factor).</p>
-<p style="text-align: left;">Scenario 1:</p>
-<p style="text-align: left;">Covid19 spread slows down. Consumer activities recover and spending increases. Election candidates are hopeful the economy will recover soon. Therefore, a further stimulus package is unlikely. In this scenario, the stock market can go down because buyers will liquidate stock investment profit and move to other consuming and investment activities.</p>
-<p style="text-align: left;">Scenario 2:</p>
-<p style="text-align: left;">Covid19 spread continues. Consumer spending activities remain in limbo. Election candidates promise further stimulus package to boost the economy. In this scenario, the stock market can go up further with buyers having more cash invest.</p>
-<p style="text-align: left;">Select a scenario below to see the future prediction on the graph</p>
+<p style="text-align: center;"><strong><u>Stock Market Price Drivers</u></strong></p>
+<p style="text-align: left;"><strong>The stock market performance is driven by the relative ratio of <span style="color: #008000;">buyers</span> and <span style="color: #ff0000;">sellers</span></strong>. The main contributing factors are consumer spending activity, future stimulus uncertainty, and non-stock investment opportunities.</p>
+<p style="text-align: left;"><span style="color: #0000ff;"><strong><span style="color: #008000;">Bull Scenario</span>:&nbsp;</strong></span>If Covid19 spread continues, consumer spending activities remain in limbo. Further stimulus packages and savings can increase the number of buyers, pushing the stock market up further.&nbsp;</p>
+<p style="text-align: left;"><span style="color: #ff0000;"><strong>Bear Scenario: </strong><span style="color: #000000;">If Covid19 spread slows down, consumer activities recover, and spending increases. Further stimulus packages are unlikely. The increased number of sellers cashing out from the stock market to spend on consuming and other investment activities can crash the stock market.</span></span></p>
+<p style="text-align: left;">Select a scenario below to see the buyer/seller factor ratio change.</p>
 <div class="wrapper">
-<button onclick="update(data_1)">Scenario 1</button>
-<button onclick="update(data_2)">Scenario 2</button>
+<button onclick="update(data1)">Bull Scenario</button>
+<button onclick="update(data2)">Bear Scenario</button>
 </div>
 </div>
 <div id="my_dataviz4"></div>
 </div>
 <script>
 
-//  data[AFG] = {"name": "Afghanistan", "estimate": 9.003, ... }
-var raw_data_1 = [
-  {"date": "2020-05-01", "value": 2920},
-  {"date": "2020-06-01", "value": 3207},
-  {"date": "2020-07-01", "value": 3154},
-  {"date": "2020-08-01", "value": 3271},
-  {"date": "2020-09-01", "value": 3271},
-  {"date": "2020-10-01", "value": 3271},
-  {"date": "2020-11-01", "value": 3271},
-  {"date": "2020-12-01", "value": 3271}
-];
+// set the dimensions and margins of the graph
+var width = 400
+    height = 350
+    margin = 30
 
-var raw_data_2 = [
-  {"date": "2020-05-01", "value": 2920},
-  {"date": "2020-06-01", "value": 3207},
-  {"date": "2020-07-01", "value": 3154},
-  {"date": "2020-08-01", "value": 3271},
-  {"date": "2020-09-01", "value": 3671},
-  {"date": "2020-10-01", "value": 3271},
-  {"date": "2020-11-01", "value": 4571},
-  {"date": "2020-12-01", "value": 5271}
-];
+// The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+var radius = Math.min(width, height) / 2 - margin
 
-var formatComma = d3.format(",");
-
-var margin = {top: 30, right: 30, bottom: 50, left: 60},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-var svg = d3.select("#my_dataviz")
+// append the svg object to the div called 'my_dataviz'
+var svg = d3.select("#my_dataviz4")
   .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width)
+    .attr("height", height)
   .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-  // When reading the csv, I must format variables:
-  var data_1 = [];
-  raw_data_1.forEach(d => data_1.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
+// create 2 data_set
+var data1 = {a_saving: 30, a_stimulus: 35, b_spending:15, b_non_stock_invest:20}
+var data2 = {a_saving: 20, a_stimulus: 15, b_spending:35, b_non_stock_invest:30}
 
-  var data_2 = [];
-  raw_data_2.forEach(d => data_2.push({date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value}));
+// set the color scale
+// var color = d3.scaleOrdinal()
+//   .domain(["saving", "stimulus", "spending", "non-stock-invest"])
+//   .range(d3.schemeDark2);
+var color_data = {a_saving: '#009933', a_stimulus: '#39ac73', b_spending:'#ff0066', b_non_stock_invest:'#e60000'};
+function color(data) {
+  return color_data[data];
+}
 
- 
-
-   // create a tooltip
-    var Tooltip = d3.select("#my_dataviz4")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px")
-
+// A function that create / update the plot for a given variable:
 function update(data) {
- //console.log(data)
-    var x = d3.scaleTime()
-      .domain(d3.extent(data, function(d) { return d.date; }))
-      .range([ 0, width ]);
-    svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-    // Add Y axis
-    var y = d3.scaleLinear()
-      .domain( [2000, 3500])
-      .range([ height, 0 ]);
-    svg.append("g")
-      .call(d3.axisLeft(y));
-    // Add the line
 
-    svg.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "#707070")
-      .attr("stroke-width", 1.5)
-      .attr("d", d3.line()
-        .x(function(d) { return x(d.date) })
-        .y(function(d) { return y(d.value) })
-        )
+  // Compute the position of each group on the pie:
+  var pie = d3.pie()
+    .value(function(d) {return d.value; })
+    .sort(function(a, b) { console.log(a) ; return d3.ascending(a.key, b.key);} ) // This make sure that group order remains the same in the pie chart
+  var data_ready = pie(d3.entries(data))
 
+  // map to data
+  var u = svg.selectAll("path")
+    .data(data_ready)
 
-    const annotations = [{
-      note: {
-        title: "Feb 3",
-        label: "The Trump administration declares a public health emergency",
-        wrap: 200,  // try something smaller to see text split in several lines
-        padding: 10,   // More = text lower
-      },
-      color: ["#DC143C"],
-      //data: { date: "20-03-20", value: 1850 },
-      y: 95,
-      x: 70,
-      dy: 120,
-      dx: 0
-    },
-    {
-      note: {
-        title: "July 31",
-        label: "The index returned to near all time high",
-        wrap: 300,  // try something smaller to see text split in several lines
-        padding: 10,   // More = text lower
-        align: "right"
-      },
-      color: ["#008000"],
-      //data: { date: "20-03-20", value: 1850 },
-      y: 50,
-      x: 375,
-      dy: -12,
-      dx: -35
-    }]
+  // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+  var arcGenerator = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius)
 
-    const makeAnnotations = d3.annotation().annotations(annotations)
+  u
+    .enter()
+    .append('path')
+    .merge(u)
+    .transition()
+    .duration(1000)
+    // .attr('d', d3.arc()
+    //   .innerRadius(0)
+    //   .outerRadius(radius)
+    // )
+    .attr('d', arcGenerator)
+    .attr('fill', function(d){ return(color(d.data.key)) })
+    .attr("stroke", "white")
+    .style("stroke-width", "2px")
+    .style("opacity", 1)
 
+  // u
+  //   .enter()
+  //   .append('text')
+  //   .attr('d', arcGenerator)
+  //   .text(function(d){ return "grp " + d.data.key})
+  //   .attr("transform", function(d) { return "translate(" + arcGenerator.centroid(d) + ")";  })
+  //   .style("text-anchor", "middle")
+  //   .style("font-size", 17)
 
-    // Add X axis label:
-    svg.append("text")
-      .attr("text-anchor", "end")
-      .attr("x", width)
-      .attr("y", height+40 )
-      .text("Time");
-
-    // Add Y axis label:
-    svg.append("text")
-      .attr("text-anchor", "end")
-      .attr("x", 0)
-      .attr("y", -20 )
-      .text("# of brokerage account")
-      .attr("text-anchor", "start")
-
-    // Add the points
-    svg
-      .append("g")
-      .selectAll("dot")
-      .data(data)
-      .enter()
-      .call(makeAnnotations)
-
-  var u = svg.selectAll(".lineTest")
-    .data([data], function(d){ return d.ser1 });
-
+  // remove the group that is not present anymore
+  u
+    .exit()
+    .remove()
 
 }
-update(data_1)
 
-</script>
+var keys = ["Saving", "Stimulus", "Spending", "Non-stock Investment"]
+var legendColor_data = {"Saving": '#009933', "Stimulus": '#39ac73', "Spending":'#ff0066', "Non-stock Investment":'#e60000'};
+function legendColor(data) {
+  return legendColor_data[data];
+}
+
+// Usually you have a color scale in your chart already
+// var color = d3.scaleOrdinal()
+//   .domain(keys)
+//   .range(d3.schemeSet1);
+
+// Add one dot in the legend for each name.
+var size = 10
+svg.selectAll("mydots")
+  .data(keys)
+  .enter()
+  .append("rect")
+    .attr("x", 110)
+    .attr("y", function(d,i){ return 120 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d){ return legendColor(d)})
+
+// Add one dot in the legend for each name.
+svg.selectAll("mylabels")
+  .data(keys)
+  .enter()
+  .append("text")
+    .attr("x", 110 + size*2)
+    .attr("y", function(d,i){ return 120 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+    .style("fill", function(d){ return legendColor(d)})
+    .text(function(d){ return d})
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
+
+// Initialize the plot with the first dataset
+update(data1)
 
 </script>
 </body>
